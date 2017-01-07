@@ -1,5 +1,14 @@
 var osmosis = require('osmosis');
 var _ = require('lodash')
+var clusterMaker = require('clusters');
+
+//number of clusters, defaults to undefined
+clusterMaker.k(2);
+
+//number of iterations (higher number gives more time to converge), defaults to 1000
+clusterMaker.iterations(750);
+
+
 var cards = [
     "abunas léonins",
     "alhammarret, grand arbitre",
@@ -128,7 +137,10 @@ var cards = [
 ]
 
 mPrices = function(str){
-    return str.replace("\\n","\n").match(/([\d\., ]+€)/g)
+    return str
+        .replace("\\n","\n")
+        .replace(",",".")
+        .match(/([\d\., ]+€)/g)
 }
 function findPrice(ccc){
     var card = ccc[0];
@@ -151,17 +163,28 @@ function findPrice(ccc){
         .data(function(listing) {
             var prices = mPrices(listing.prix).map(function(e){
                 return parseFloat(e)//.slice(0,-1).replace(".",","))
-            }).sort() 
-            var averagePrice = _.mean(prices)
-            averagePrice = (""+averagePrice).replace(".",",")
-            console.log(listing)
-            console.log(card, "\t", averagePrice,"\t",prices)
+            }).sort()
+            //data from which to identify clusters, defaults to []
+            clusterMaker.data(prices.map(function(e){return [e,0]}))
+            var centroids = clusterMaker
+                .clusters()
+                .map(function(e){return e.centroid[0]})
+            var finalPrice = centroids.sort()[0]
+
+            // console.log("clusterMaker =========> ", centroids);
+
+            // var averagePrice = _.mean(prices)
+            var averagePrice = (""+finalPrice)
+                .replace(".",",")
+                .slice(0,5)
+            // console.log(listing)
+            console.log(averagePrice, "\t", card) //, "\t", ,prices)
             // console.log('prix1', listing.prix1)
             // console.log('prix2', listing.prix2)
         })
-        .log(console.log)
-        .error(console.log)
-        .debug(console.log)
+        // .log(console.log)
+        // .error(console.log)
+        // .debug(console.log)
         .done(function(){
             if (tail.length > 0) {
                 // console.log("next is:",tail[0])
@@ -169,16 +192,8 @@ function findPrice(ccc){
             }
         })
 }
-//search.php?s=annelures+d%27%E9clair
-//             annelures+d%27%E9clair
-//search.php?s=annelures%20d'%C3%A9clair
-//             annelures+d'%C3%A9clair"
 
 console.log("start")
-// findPrice(cards)
-findPrice(["bourdonnement du radix"])
+findPrice(cards)
+// findPrice(["ange lumineux"])
 console.log("end")
-
-
-// abunas+l%E9onins
-// abunas%20l%EF%BF%BDonins
