@@ -9,6 +9,44 @@ clusterMaker.k(2);
 clusterMaker.iterations(750);
 
 
+var silver = [
+    "sang de dragon",
+    "stylet de tel-jilad",
+    "talisman de dominance",
+    "talisman d'impulsion",
+    "talisman d'indulgence",
+    "talisman d'unité",
+    "marteau de guerre loxodon",
+    "prototype myr",
+    "piègelame léonin",
+    "prison cérébrale",
+    "masque de la mémoire",
+    "masque de clairvoyance",
+    "manipulateur glacial",
+    "lame de la banshee",
+    "hurlefeu",
+    "hexapode à piquants",
+    "harnais de bataille vulshok",
+    "griffes racleuses",
+    "goutte de soleil",
+    "golem miroir",
+    "ornithoptère",
+    "travailleur crépusculaire",
+    "pierres en chasse",
+    "puits des scintimites",
+    "trahison de la chair",
+    "porteuse de malheur",
+    "nim écorché",
+    "mur de sang",
+    "goavesang slith",
+    "ancien fléau",
+    "chef de la fonderie",
+    "echange sanglant",
+    "escogriffe nim",
+    "chef de la fonderie",
+    "chef de la fonderie",
+    "invocation de vicelangue"
+]
 var cards = [
     "abunas léonins",
     "alhammarret, grand arbitre",
@@ -169,21 +207,19 @@ function findPrice(ccc){
             var centroids = clusterMaker
                 .clusters()
                 .map(function(e){return e.centroid[0]})
-            var finalPrice = centroids.sort()[0]
+            centroids.sort(function(a,b){return a-b})
+            var finalPrice = centroids[0]
 
             // console.log("clusterMaker =========> ", centroids);
-
             // var averagePrice = _.mean(prices)
             var averagePrice = (""+finalPrice)
                 .replace(".",",")
                 .slice(0,5)
             // console.log(listing)
-            console.log(averagePrice, "\t", card) //, "\t", ,prices)
-            // console.log('prix1', listing.prix1)
-            // console.log('prix2', listing.prix2)
+            console.log(averagePrice, "\t", card)//,"\t",centroids)
         })
         // .log(console.log)
-        // .error(console.log)
+        .error(console.log)
         // .debug(console.log)
         .done(function(){
             if (tail.length > 0) {
@@ -194,6 +230,11 @@ function findPrice(ccc){
 }
 
 console.log("start")
-findPrice(cards)
-// findPrice(["ange lumineux"])
+findPrice(silver)
+// findPrice([
+//     "orbe mesmérique",
+//     "lentille extraplanaire",
+//     "dent et ongle",
+//     "butin du caveau"
+//     ])
 console.log("end")
